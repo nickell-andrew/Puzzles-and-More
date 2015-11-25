@@ -1,0 +1,113 @@
+// Given a string of numbers and operators, print out all the different ways you can add 
+//parentheses to force the order of operations to be explicit, and the result for running 
+//the operations in that order.
+
+// This test is timed, so please send the correct solution back as soon as you are finished. 
+//It should take 30-90 minutes, limit is 2 hours. GOOD LUCK!
+
+// Assume:
+// No weird inputs, everything is separated by one space.
+// Supported operators are +, *, -, = (for the = operator, if the values are the same return 1, 
+//otherwise return 0)
+// Print your results sorted numerically
+// Don't worry about the input expression size being too large
+// Your code should be written in javascript
+// Don't use eval or external libraries
+
+// Example:
+// node test.js "2 - 1 - 1"
+// ((2-1)-1) = 0
+// (2-(1-1)) = 2
+
+// node test.js "2 * 3 - 4 * 5";
+// (2*(3-(4*5))) = -34
+// ((2*3)-(4*5)) = -14
+// ((2*(3-4))*5) = -10
+// (2*((3-4)*5)) = -10
+// (((2*3)-4)*5) = 10
+
+// node test.js "2 + 2 = 2"
+// ((2+2)=2) = 0
+// (2+(2=2)) = 3
+
+
+
+
+// console.log(process.argv[2]);
+// we'll want to use recursion to solve this.
+// we want to apply parens such that all groups inside them can be reduced to 2 numbers and an operator + = - * or something inside parens
+// all printed strings will be surrounded by parens (the last 2 evaluations and an operator contained within)
+
+// =============// the regex fails at capturing nested groups... ===============
+
+// var reducedExpr = /\((\(?[\d\=\+\-\*]*\)?)([\-\+\*\=])(\(?[\d\=\+\-\*]*\)?)\)/; //matches open paren, 1st group, operator, 2nd group, close paren
+// //console.log(reducedExpr.exec("((123)+(432))")); //interest in idx 1, 2, 3
+
+// var evaluateExpression = function (string) {
+//   var groups = reducedExpr.exec(string);
+//   console.log(groups);
+//   var group1 = (/(\([\d\=\+\-\*]*\))/).test(groups[1]) ? evaluateExpression(groups[1]): parseInt(groups[1]);
+//   var operator = groups[2];
+//   var group2 = (/(\([\d\=\+\-\*]*\))/).test(groups[3]) ? evaluateExpression(groups[3]): parseInt(groups[3]);
+//   var result = operate(group1, operator, group2);
+//   console.log(group1, group2, operator, result);
+//   return result;
+// };
+
+function evaluation (string) {
+  //loop through combining sets of values in parens
+  while (typeof string !== 'number') {
+    //split the thing into pieces without breaking up parens
+    var matchInner = /([0-9]+)[\=\+\-\*]([0-9]+)/; //should match values that are contained in parens
+    //replace values with operate on the values
+    //remove parens after if necessary on either side
+  }
+  return string;
+};
+var a = "((2-1)-1)"; 
+console.log(evaluation(a)); // 0
+
+var operate = function (num1, operator, num2) {
+  if(operator === '+') {
+    return num1 + num2;
+  } else if (operator === '-') {
+    return num1 - num2;
+  } else if (operator === '*') {
+    return num1 * num2;
+  } else if (operator === '=') {
+    return num1 === num2 ? 1 : 0;
+  }
+};
+
+
+function createExpressions (string) {
+  var results = [];
+  var operators = string.split(" ");
+  var numbers = [];
+  for (var j = 0; j < operators.length; j++) {
+    if((/\d+/).test(operators[j])) {
+      numbers.push(operators.splice(j,1));
+    }
+  }
+  function inner (groups, operators, preFix) {
+    if (groups.length === 1) {
+      evaluated = evaluation(groups[0]);
+      results.push([groups[0] + ' = ' + evaluated, evaluated]); 
+    }
+    for (var i = 0; i < groups.length-1; i++) { // grab 2 adjacent groups and paren wrap
+      var tempG = groups.slice();
+      var tempO = operators.slice();
+      tempG.splice(i, 2, "("+ tempG[i] + tempO.splice(i, 1) + tempG[i+1] +")"); 
+      inner(tempG, tempO);
+    }
+  }
+  inner(numbers, operators, "(");
+};
+
+// createExpressions("2 - 1 - 1")
+
+
+createExpressions(process.argv[2]);
+
+
+
