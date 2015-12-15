@@ -14,6 +14,19 @@
 
 function KnightJumps(str) { 
 
+//assume board represented by an 8x8 2d array
+//squares are given coords, note they are 1-8 while our array indices 
+  //will be 0-7
+
+//additionally, the given coords will be a string, we want to chop
+//off parens and separate via the space to get the substrings that will
+//form our x and y coords
+
+//our algorithm will find all 8 moves the knight can make
+//from it's current location 
+
+//and then figure out which are in bounds
+
   // code goes here  
   return str; 
          
